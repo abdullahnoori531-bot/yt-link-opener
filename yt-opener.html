@@ -1,152 +1,20 @@
-<!doctype html>
-<html lang="fa" dir="rtl">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>باز کردن در اپ یوتیوب</title>
-  <style>
-    body{font-family:Arial, sans-serif;max-width:640px;margin:24px auto;padding:0 16px;line-height:1.8}
-    .card{border:1px solid #ddd;border-radius:12px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
-    button{padding:12px 16px;border:none;border-radius:10px;cursor:pointer;font-size:16px}
-    .primary{background:#cc0000;color:#fff}
-    .muted{background:#f5f5f5}
-    .row{display:flex;gap:8px;flex-wrap:wrap}
-    code{background:#f3f3f3;padding:2px 6px;border-radius:6px}
-  </style>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <meta http-equiv="refresh" content="1; url=https://youtube.com/@yeacats025?si=QqB9O-VouBGAcSkH">
+  <script>
+    // تلاش برای باز کردن مستقیم اپ یوتیوب
+    window.onload = function() {
+      setTimeout(function() {
+        window.location.href = "vnd.youtube://youtube.com/@yeacats025";
+      }, 500);
+    };
+  </script>
 </head>
 <body>
-  <div class="card">
-    <h2>در حال باز کردن لینک در اپ یوتیوب…</h2>
-    <p>اگر اپ باز نشد، روی دکمه زیر بزن:</p>
-    <div class="row">
-      <button class="primary" id="openApp">باز کردن در اپ یوتیوب</button>
-      <a id="fallback" class="muted" style="padding:12px 16px;border-radius:10px;text-decoration:none;color:#111" href="#" rel="noopener">باز کردن در مرورگر</a>
-    </div>
-    <p style="font-size:14px;color:#666;margin-top:12px">
-      نکته: برخی برنامه‌ها مثل مرورگر داخل اینستاگرام، لینک‌های اپ را مسدود می‌کنند. اگر باز نشد، از منوی سه‌نقطه گزینه <b>Open in system browser</b> را بزن.
-    </p>
-    <details style="margin-top:8px">
-      <summary>نحوه استفاده از این صفحه</summary>
-      <ol>
-        <li>این فایل را در هاست خودت (مثلاً GitHub Pages) آپلود کن.</li>
-        <li>برای ساخت لینک‌ها از پارامترهای آدرس استفاده کن:
-          <ul>
-            <li>ویدیو: <code>?type=video&amp;id=VIDEO_ID</code></li>
-            <li>شورتس: <code>?type=shorts&amp;id=SHORT_ID</code></li>
-            <li>کانال: <code>?type=channel&amp;id=CHANNEL_ID</code></li>
-            <li>پلی‌لیست: <code>?type=playlist&amp;id=PLAYLIST_ID</code></li>
-          </ul>
-        </li>
-        <li>نمونه: <code>yt-opener.html?type=video&amp;id=dQw4w9WgXcQ</code></li>
-        <li>یا لینک خام یوتیوب را با پارامتر <code>url=</code> بده (ما خودمان ID را استخراج می‌کنیم):<br>
-            <code>yt-opener.html?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ</code>
-        </li>
-      </ol>
-    </details>
-  </div>
-
-  <script>
-    (function(){
-      function getParam(name){
-        const url = new URL(window.location.href);
-        return url.searchParams.get(name) || "";
-      }
-      // Clean a raw YouTube URL if passed in `url` param (optional)
-      const raw = getParam('url');
-      let type = (getParam('type') || '').toLowerCase();
-      let id = getParam('id') || '';
-
-      function extractFromRaw(u){
-        try{
-          const url = new URL(u);
-          const host = url.hostname.replace('m.','');
-          if(host.includes('youtube.com') || host.includes('youtu.be')){
-            // video id
-            if(url.pathname.startsWith('/watch')){
-              return {type:'video', id: url.searchParams.get('v') || ''};
-            }
-            if(url.hostname.includes('youtu.be')){
-              const vid = url.pathname.split('/').filter(Boolean)[0] || '';
-              return {type:'video', id: vid};
-            }
-            if(url.pathname.startsWith('/shorts/')){
-              const sid = url.pathname.split('/')[2] || '';
-              return {type:'shorts', id: sid};
-            }
-            if(url.pathname.startsWith('/channel/')){
-              const cid = url.pathname.split('/')[2] || '';
-              return {type:'channel', id: cid};
-            }
-            if(url.pathname.startsWith('/playlist')){
-              const pid = url.searchParams.get('list') || '';
-              return {type:'playlist', id: pid};
-            }
-            if(url.pathname.startsWith('/@')){
-              return {type:'channel', id: url.pathname.slice(1)};
-            }
-          }
-        }catch(e){}
-        return null;
-      }
-
-      if(raw && (!type || !id)){
-        const info = extractFromRaw(raw);
-        if(info){ type = info.type; id = info.id; }
-      }
-
-      // Fallback if still nothing
-      if(!type || !id){
-        document.querySelector('#openApp').disabled = true;
-        document.querySelector('#fallback').textContent = 'ورودی نامعتبر';
-        document.querySelector('#fallback').removeAttribute('href');
-        return;
-      }
-
-      function buildLinks(type, id){
-        let web='', app='';
-        switch(type){
-          case 'video':
-            web = 'https://www.youtube.com/watch?v=' + encodeURIComponent(id);
-            app = 'youtube://www.youtube.com/watch?v=' + encodeURIComponent(id);
-            break;
-          case 'shorts':
-            web = 'https://www.youtube.com/shorts/' + encodeURIComponent(id);
-            app = 'youtube://www.youtube.com/shorts/' + encodeURIComponent(id);
-            break;
-          case 'channel':
-            web = 'https://www.youtube.com/' + id;
-            app = 'youtube://www.youtube.com/' + id;
-            break;
-          case 'playlist':
-            web = 'https://www.youtube.com/playlist?list=' + encodeURIComponent(id);
-            app = 'youtube://www.youtube.com/playlist?list=' + encodeURIComponent(id);
-            break;
-          default:
-            web = 'https://www.youtube.com/';
-            app = 'youtube://www.youtube.com/';
-        }
-        return {web, app};
-      }
-
-      const links = buildLinks(type, id);
-      const btn = document.getElementById('openApp');
-      const fallback = document.getElementById('fallback');
-      fallback.href = links.web;
-
-      function openApp(){
-        // Try to open the app scheme
-        window.location.href = links.app;
-        // Fallback after short delay
-        setTimeout(function(){
-          // If app did not open, go to web
-          window.location.href = links.web;
-        }, 1200);
-      }
-
-      // Auto attempt on load
-      setTimeout(openApp, 50);
-      btn.addEventListener('click', openApp);
-    })();
-  </script>
+  <h2>در حال انتقال به یوتیوب...</h2>
+  <p>اگر خودکار باز نشد، <a href="https://youtube.com/@yeacats025?si=QqB9O-VouBGAcSkH">اینجا کلیک کن</a>.</p>
 </body>
 </html>
